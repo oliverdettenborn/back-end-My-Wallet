@@ -1,0 +1,28 @@
+{
+  "name": "back-end-My-Wallet",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/thaliadettenborn/back-end-My-Wallet.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/thaliadettenborn/back-end-My-Wallet/issues"
+  },
+  "homepage": "https://github.com/thaliadettenborn/back-end-My-Wallet#readme",
+  "dependencies": {
+    "bcrypt": "^5.0.0",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "joi": "^17.3.0",
+    "pg": "^8.5.1",
+    "uuid": "^8.3.1"
+  }
+}
