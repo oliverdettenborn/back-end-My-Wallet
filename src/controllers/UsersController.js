@@ -1,8 +1,20 @@
 const UserValidation = require('../schemas/users');
 const UsersRepository = require('../models/users');
+const SessionsRepository = require('../models/sessions');
 
-const SignIn = (req,res) => {
+const SignIn = async (req,res) => {
+  if(!req.body.email || !req.body.password){
+    return res.sendStatus(400)
+  }
 
+  const { error } = UserValidation.verify(req.body);
+  if(error) return res.status(422).send({ error: error.details[0].message })
+
+  const user = await UsersRepository.findByEmail(req.body.email);
+  const newSession = await SessionsRepository.create(user, req.body.password);
+  if(!user || !newSession) return res.sendStatus(401);
+
+  res.status(200).send(newSession);
 }
 
 const SignUp = async (req,res) => {

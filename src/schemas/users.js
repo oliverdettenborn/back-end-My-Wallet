@@ -8,7 +8,7 @@ const schemaSignUp = joi.object({
 })
 
 const schemaSignIn = joi.object({
-  email: joi.string().required(),
+  email: joi.string().email().required(),
   password: joi.string().alphanum().min(6).max(16).required()
 })
 
