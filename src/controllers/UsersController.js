@@ -8,7 +8,7 @@ const SignIn = async (req,res) => {
   }
 
   const { error } = UserValidation.verify(req.body);
-  if(error) return res.status(422).send({ error: error.details[0].message })
+  if(error) return res.status(422).send({ message: error.details[0].message })
 
   const user = await UsersRepository.findByEmail(req.body.email);
   const newSession = await SessionsRepository.create(user, req.body.password);
@@ -24,10 +24,10 @@ const SignUp = async (req,res) => {
 
   const { error } = UserValidation.create(req.body);
 
-  if(error) return res.status(422).send({ error: error.details[0].message })
+  if(error) return res.status(422).send({ message: error.details[0].message })
   
   const emailIsUnique = await UsersRepository.emailIsUnique(req.body.email)
-  if(!emailIsUnique) return res.status(409).send({ error: "Email already exists" })
+  if(!emailIsUnique) return res.status(409).send({ message: "Email already exists" })
 
   const { id, name, email } = await UsersRepository.create(req.body);
   res.status(201).send({ id, name, email })
