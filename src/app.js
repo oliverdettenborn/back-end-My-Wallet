@@ -7,8 +7,11 @@ app.use(cors());
 app.use(express.json());
 
 const UsersController = require('./controllers/UsersController');
+const authMiddleware = require('./midllewares/authMiddleware');
 
-app.post('/api/users/sign-up', UsersController.SignUp)
-app.post('/api/users/sign-in', UsersController.SignIn)
+//users routes
+app.post('/api/users/sign-up', UsersController.signUp)
+app.post('/api/users/sign-in', UsersController.signIn)
+app.post('/api/users/sign-out', authMiddleware, UsersController.signOut)
 
 module.exports = app;

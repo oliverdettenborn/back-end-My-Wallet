@@ -2,7 +2,7 @@ const UserValidation = require('../schemas/users');
 const UsersRepository = require('../models/users');
 const SessionsRepository = require('../models/sessions');
 
-const SignIn = async (req,res) => {
+const signIn = async (req,res) => {
   if(!req.body.email || !req.body.password){
     return res.sendStatus(400)
   }
@@ -17,7 +17,7 @@ const SignIn = async (req,res) => {
   res.status(200).send(newSession);
 }
 
-const SignUp = async (req,res) => {
+const signUp = async (req,res) => {
   if(!req.body.name || !req.body.email || !req.body.password || !req.body.confirmPassword){
     return res.sendStatus(400)
   }
@@ -33,7 +33,14 @@ const SignUp = async (req,res) => {
   res.status(201).send({ id, name, email })
 }
 
+const signOut = async (req,res) => {
+  const { token } = req.session;
+  await SessionsRepository.deleteByToken(token);
+  res.sendStatus(200);
+}
+
 module.exports = {
-  SignIn,
-  SignUp
+  signIn,
+  signUp,
+  signOut,
 }
