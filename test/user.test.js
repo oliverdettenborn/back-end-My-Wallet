@@ -36,7 +36,7 @@ describe('POST /sign-up', () => {
       name: 'Teste de Teste',
       email: 'teste@gmail.com',
       password: '1',
-      confirmPassword: ''
+      confirmPassword: '123'
     };
 	
     const response = await supertest(app).post('/api/users/sign-up').send(body);
@@ -52,5 +52,23 @@ describe('POST /sign-up', () => {
 	
     const response = await supertest(app).post('/api/users/sign-up').send(body);
 		expect(response.status).toBe(409);
+  });
+  it('should return 400 on error sign-up', async () => {
+		const body = {
+    };
+	
+    const response = await supertest(app).post('/api/users/sign-up').send(body);
+		expect(response.status).toBe(400);
+  });
+  it('should return 422 on error sign-up', async () => {
+		const body = {
+      name: '<script>meu vírus</script>',
+      email: '<script>meu vírus</script>',
+      password: '<script>meu vírus</script>',
+      confirmPassword: '<script>meu vírus</script>'
+    };
+	
+    const response = await supertest(app).post('/api/users/sign-up').send(body);
+		expect(response.status).toBe(422);
 	});
 });
