@@ -7,11 +7,15 @@ app.use(cors());
 app.use(express.json());
 
 const UsersController = require('./controllers/UsersController');
+const WalletController = require('./controllers/WalletController');
 const authMiddleware = require('./midllewares/authMiddleware');
 
 //users routes
 app.post('/api/users/sign-up', UsersController.signUp)
 app.post('/api/users/sign-in', UsersController.signIn)
 app.post('/api/users/sign-out', authMiddleware, UsersController.signOut)
+
+//wallet routes
+app.get('/api/user/wallet', authMiddleware, WalletController.getAll)
 
 module.exports = app;
