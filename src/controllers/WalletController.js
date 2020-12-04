@@ -6,7 +6,7 @@ const getAll = async (req,res) => {
   res.status(200).send(
     { 
       records, 
-      total: `R$ ${total.replace('.',',')}` 
+      total 
     });
 }
 

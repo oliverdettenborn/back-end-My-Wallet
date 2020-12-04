@@ -9,7 +9,9 @@ async function getAllByUser(userId){
 }
 
 function calcTotal(list){
-  const values = list.map(item => parseFloat(item.amount.split('R$ ')[1].replace(',','.')))
+  console.log(list)
+  const values = list.map(item => parseFloat(item.amount.replace('R$ ','').replace(',','.')))
+  console.log(values)
   return values.reduce((n,total) => n + total, 0)
 }
 

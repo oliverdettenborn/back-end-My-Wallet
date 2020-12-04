@@ -11,8 +11,9 @@ const signIn = async (req,res) => {
   if(error) return res.status(422).send({ message: error.details[0].message })
 
   const user = await UsersRepository.findByEmail(req.body.email);
+  if(!user) return res.sendStatus(401);
   const newSession = await SessionsRepository.create(user, req.body.password);
-  if(!user || !newSession) return res.sendStatus(401);
+  if(!newSession) return res.sendStatus(401);
 
   res.status(200).send(newSession);
 }
