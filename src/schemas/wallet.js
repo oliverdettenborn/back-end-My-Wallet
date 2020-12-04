@@ -1,15 +1,14 @@
-const { number } = require('joi');
 const joi = require('joi');
 
 const schemaEntry = joi.object({
-  description: joi.string().required(),
-  value: joi.string().pattern(/^R\$(\d{1,3}(\.\d{3})*|\d+)(\,\d{2})?$/, 'format brazilian money').required(),
+  description: joi.string().alphanum().trim().required(),
+  amount: joi.string().pattern(/^[0-9]+(,[0-9]{1,2})?$/).required(),
   kind: joi.string().pattern(/^entry$/).required()
 })
 
 const schemaOutgoing = joi.object({
-  description: joi.string().required(),
-  value: joi.string().pattern(/^R\$(\d{1,3}(\.\d{3})*|\d+)(\,\d{2})?$/, 'format brazilian money').required(),
+  description: joi.string().alphanum().trim().required(),
+  amount: joi.string().pattern(/^[0-9]+(,[0-9]{1,2})?$/).required(),
   kind: joi.string().pattern(/^outgoing$/).required()
 })
 

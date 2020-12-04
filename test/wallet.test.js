@@ -15,6 +15,7 @@ afterAll(async () => {
 })
 
 let token = null;
+let userId = null;
 
 describe('User sign-up and sign-in to get token', () => {
 	it('should users sign-up', async () => {
@@ -48,6 +49,109 @@ describe('User sign-up and sign-in to get token', () => {
   });
 });
 
+describe('POST /user/wallet/entry', () => {
+	it('should return 200 to create new entry', async () => {
+    const body = {
+      description: 'Teste',
+      amount: '1,50',
+      kind: 'entry'
+    }
+
+    const responseObj = {
+      description: 'Teste',
+      amount: 'R$ 1,50',
+      kind: 'entry',
+      userId: userId,
+      insertionDate: '04/12'
+    }
+
+    const response = await (await supertest(app).post('/api/user/wallet/entry').send(body).set('Authorization',`Bearer ${token}`))
+    expect(response.status).toBe(201);
+    expect(response.body).toMatchObject(responseObj);
+  });
+
+  it('should return 401 to wrong token', async () => {
+    const body = {
+      description: 'Teste',
+      amount: '1,50',
+      kind: 'entry'
+    }
+		const response = await supertest(app).post('/api/user/wallet/entry').send(body).set('Authorization',`Bearer lalala`)
+    expect(response.status).toBe(401);
+  });
+
+  it('should return 401 forgot token', async () => {
+    const body = {
+      description: 'Teste',
+      amount: '1,50',
+      kind: 'entry'
+    }
+		const response = await supertest(app).post('/api/user/wallet/entry').send(body)
+    expect(response.status).toBe(401);
+  });
+  it('should return 422 when try insert html tags', async () => {
+    const body = {
+      description: '<script>meu vírus</script>',
+      amount: '1,50',
+      kind: 'entry'
+    }
+		const response = await supertest(app).post('/api/user/wallet/entry').send(body).set('Authorization',`Bearer ${token}`)
+    expect(response.status).toBe(422);
+  });
+});
+
+describe('POST /user/wallet/outgoing', () => {
+	it('should return 200 to create new outgoing', async () => {
+    const body = {
+      description: 'Teste',
+      amount: '1,50',
+      kind: 'outgoing'
+    }
+
+    const responseObj = {
+      description: 'Teste',
+      amount: '-R$ 1,50',
+      kind: 'outgoing',
+      userId: userId,
+      insertionDate: '04/12'
+    }
+
+    const response = await (await supertest(app).post('/api/user/wallet/outgoing').send(body).set('Authorization',`Bearer ${token}`))
+    expect(response.status).toBe(201);
+    expect(response.body).toMatchObject(responseObj);
+  });
+
+  it('should return 401 to wrong token', async () => {
+    const body = {
+      description: 'Teste',
+      amount: '1,50',
+      kind: 'outgoing'
+    }
+		const response = await supertest(app).post('/api/user/wallet/outgoing').send(body).set('Authorization',`Bearer lalala`)
+    expect(response.status).toBe(401);
+  });
+
+  it('should return 401 forgot token', async () => {
+    const body = {
+      description: 'Teste',
+      amount: '1,50',
+      kind: 'outgoing'
+    }
+		const response = await supertest(app).post('/api/user/wallet/outgoing').send(body)
+    expect(response.status).toBe(401);
+  });
+
+  it('should return 422 when try insert html tags', async () => {
+    const body = {
+      description: '<script>meu vírus</script>',
+      amount: '1,50',
+      kind: 'outgoing'
+    }
+		const response = await supertest(app).post('/api/user/wallet/outgoing').send(body).set('Authorization',`Bearer ${token}`)
+    expect(response.status).toBe(422);
+  });
+});
+
 describe('GET /user/wallet', () => {
 	it('should return 200 to get all obj user wallet', async () => {
 		const response = await supertest(app).get('/api/user/wallet').set('Authorization',`Bearer ${token}`)
@@ -65,4 +169,5 @@ describe('GET /user/wallet', () => {
 		const response = await supertest(app).get('/api/user/wallet')
     expect(response.status).toBe(401);
   });
+
 });

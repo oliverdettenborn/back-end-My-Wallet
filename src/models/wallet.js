@@ -1,4 +1,5 @@
 const db = require('../database');
+const dayjs = require('dayjs');
 
 async function getAllByUser(userId){
   const result = await db.query(
@@ -8,14 +9,22 @@ async function getAllByUser(userId){
   return result.rows
 }
 
+async function newRecord(userId, body){
+  const date = dayjs().format('DD/MM');
+  const result = await db.query(
+    'INSERT INTO wallet ("userId", description, amount, kind, "insertionDate") VALUES ($1,$2,$3,$4,$5) RETURNING *',
+    [userId, body.description, body.amount, body.kind, date]
+  )
+  return result.rows[0]
+}
+
 function calcTotal(list){
-  console.log(list)
   const values = list.map(item => parseFloat(item.amount.replace('R$ ','').replace(',','.')))
-  console.log(values)
   return values.reduce((n,total) => n + total, 0)
 }
 
 module.exports = {
   getAllByUser,
-  calcTotal
+  calcTotal,
+  newRecord
 }
