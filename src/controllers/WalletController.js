@@ -1,8 +1,13 @@
 const WalletRepository = require('../models/wallet');
 
 const getAll = async (req,res) => {
-  const registers = await WalletRepository.getAllByUser(req.userId);
-  res.status(200).send(registers);
+  const records = await WalletRepository.getAllByUser(req.userId);
+  const total = WalletRepository.calcTotal(records).toFixed(2);
+  res.status(200).send(
+    { 
+      records, 
+      total: `R$ ${total.replace('.',',')}` 
+    });
 }
 
 module.exports = {

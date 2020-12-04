@@ -4,6 +4,7 @@ const app = require('../src/app');
 
 const cleanDatabase = async () => {
   await db.query('DELETE FROM sessions');
+  await db.query('DELETE FROM wallet');
   await db.query('DELETE FROM users');
 }
 
