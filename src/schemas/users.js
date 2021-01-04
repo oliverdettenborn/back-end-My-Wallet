@@ -1,7 +1,7 @@
 const joi = require('joi');
 
 const schemaSignUp = joi.object({
-  name: joi.string().trim().pattern(/^[\w\s]+$/,'name must consist only of letters and space').required(),
+  name: joi.string().trim().required(),
   email: joi.string().email().trim().required(),
   password: joi.string().alphanum().trim().min(6).max(16).required(),
   confirmPassword: joi.ref('password')
