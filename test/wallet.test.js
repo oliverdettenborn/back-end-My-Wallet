@@ -14,8 +14,7 @@ afterAll(async () => {
   db.end();
 })
 
-let token = null;
-let userId = null;
+let token, userId, idRecord;
 
 describe('User sign-up and sign-in to get token', () => {
 	it('should users sign-up', async () => {
@@ -61,13 +60,13 @@ describe('POST /user/wallet/entry', () => {
       description: 'Teste',
       amount: 'R$ 1,50',
       kind: 'entry',
-      userId: userId,
-      insertionDate: '04/12'
+      userId: userId
     }
 
     const response = await (await supertest(app).post('/api/user/wallet/entry').send(body).set('Authorization',`Bearer ${token}`))
     expect(response.status).toBe(201);
     expect(response.body).toMatchObject(responseObj);
+    idRecord = response.body.id;
   });
 
   it('should return 401 to wrong token', async () => {
@@ -89,15 +88,6 @@ describe('POST /user/wallet/entry', () => {
 		const response = await supertest(app).post('/api/user/wallet/entry').send(body)
     expect(response.status).toBe(401);
   });
-  it('should return 422 when try insert html tags', async () => {
-    const body = {
-      description: '<script>meu vírus</script>',
-      amount: '1,50',
-      kind: 'entry'
-    }
-		const response = await supertest(app).post('/api/user/wallet/entry').send(body).set('Authorization',`Bearer ${token}`)
-    expect(response.status).toBe(422);
-  });
 });
 
 describe('POST /user/wallet/outgoing', () => {
@@ -112,8 +102,7 @@ describe('POST /user/wallet/outgoing', () => {
       description: 'Teste',
       amount: '-R$ 1,50',
       kind: 'outgoing',
-      userId: userId,
-      insertionDate: '04/12'
+      userId: userId
     }
 
     const response = await (await supertest(app).post('/api/user/wallet/outgoing').send(body).set('Authorization',`Bearer ${token}`))
@@ -140,16 +129,6 @@ describe('POST /user/wallet/outgoing', () => {
 		const response = await supertest(app).post('/api/user/wallet/outgoing').send(body)
     expect(response.status).toBe(401);
   });
-
-  it('should return 422 when try insert html tags', async () => {
-    const body = {
-      description: '<script>meu vírus</script>',
-      amount: '1,50',
-      kind: 'outgoing'
-    }
-		const response = await supertest(app).post('/api/user/wallet/outgoing').send(body).set('Authorization',`Bearer ${token}`)
-    expect(response.status).toBe(422);
-  });
 });
 
 describe('GET /user/wallet', () => {
@@ -170,4 +149,21 @@ describe('GET /user/wallet', () => {
     expect(response.status).toBe(401);
   });
 
+});
+
+describe('DELETE /api/user/wallet/:idRecord', () => {
+	it('should return 200 to delete a record', async () => {
+    const response = await supertest(app).delete(`/api/user/wallet/${idRecord}`).set('Authorization',`Bearer ${token}`)
+    expect(response.status).toBe(200);
+  });
+
+  it('should return 401 to wrong token', async () => {
+		const response = await supertest(app).delete(`/api/user/wallet/${idRecord}`).set('Authorization',`Bearer lalala`)
+    expect(response.status).toBe(401);
+  });
+
+  it('should return 401 forgot token', async () => {
+		const response = await supertest(app).delete(`/api/user/wallet/${idRecord}`)
+    expect(response.status).toBe(401);
+  });
 });

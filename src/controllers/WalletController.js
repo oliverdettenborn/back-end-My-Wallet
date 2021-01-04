@@ -48,8 +48,21 @@ const createOutgoing = async (req,res) => {
   }
 }
 
+const deleteRecord = async (req,res) => {
+  try{
+    const { idRecord } = req.params;
+  
+    await WalletRepository.deleteRecord(req.userId, idRecord);
+    res.sendStatus(200);
+  }catch (e){
+    console.error(e);
+    res.sendStatus(500);
+  }
+}
+
 module.exports = {
   getAll,
   createEntry,
-  createOutgoing
+  createOutgoing,
+  deleteRecord
 }

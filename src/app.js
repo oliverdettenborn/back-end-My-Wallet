@@ -19,5 +19,7 @@ app.post('/api/users/sign-out', authMiddleware, UsersController.signOut);
 app.get('/api/user/wallet', authMiddleware, WalletController.getAll);
 app.post('/api/user/wallet/entry', authMiddleware, WalletController.createEntry);
 app.post('/api/user/wallet/outgoing', authMiddleware, WalletController.createOutgoing);
+app.delete('/api/user/wallet/:idRecord', authMiddleware, WalletController.deleteRecord);
+
 
 module.exports = app;
