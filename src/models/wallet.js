@@ -19,7 +19,7 @@ async function newRecord(userId, body){
 }
 
 function calcTotal(list){
-  const values = list.map(item => parseFloat(item.amount.replace('$ ','').replace(',','.')))
+  const values = list.map(item => parseFloat(item.amount.replace('R$ ','').replace(',','.')))
   return values.reduce((n,total) => n + total, 0)
 }
 

@@ -3,12 +3,8 @@ const WalletValidation = require('../schemas/wallet');
 
 const getAll = async (req,res) => {
   const records = await WalletRepository.getAllByUser(req.userId);
-  const total = WalletRepository.calcTotal(records).toFixed(2);
-  res.status(200).send(
-    { 
-      records, 
-      total 
-    });
+  const total = `R$ ${WalletRepository.calcTotal(records).toFixed(2)}`;
+  res.status(200).send({ records, total });
 }
 
 const createEntry = async (req,res) => {
