@@ -1,23 +1,18 @@
-require('dotenv').config();
-const express = require('express');
+import dotenv from 'dotenv'
+import express from 'express'
+import cors from 'cors'
 
-const app = express();
-const cors = require('cors');
+import usersRouter from './routers/usersRouter'
+import walletRouter from './routers/walletRouter'
+import authMiddleware from './midllewares/authMiddleware'
 
-app.use(cors());
-app.use(express.json());
+dotenv.config()
+const app = express()
 
-const UsersController = require('./controllers/UsersController');
-const WalletController = require('./controllers/WalletController');
-const authMiddleware = require('./midllewares/authMiddleware');
+app.use(cors())
+app.use(express.json())
 
-app.post('/api/users/sign-up', UsersController.signUp);
-app.post('/api/users/sign-in', UsersController.signIn);
-app.post('/api/users/sign-out', authMiddleware, UsersController.signOut);
+app.use('/api/users', usersRouter)
+app.use('/api/wallet', authMiddleware, walletRouter)
 
-app.get('/api/user/wallet', authMiddleware, WalletController.getAll);
-app.post('/api/user/wallet/entry', authMiddleware, WalletController.createEntry);
-app.post('/api/user/wallet/outgoing', authMiddleware, WalletController.createOutgoing);
-app.delete('/api/user/wallet/:idRecord', authMiddleware, WalletController.deleteRecord);
-
-module.exports = app;
+export default app
