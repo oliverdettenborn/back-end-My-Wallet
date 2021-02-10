@@ -1,62 +1,34 @@
-import UserValidation from '../schemas/users'
-import UsersRepository from '../models/users'
-import SessionsRepository from '../models/sessions'
+import Users from '../models/users'
+import Sessions from '../models/sessions'
+import { v4 } from 'uuid'
+import bcrypt from 'bcrypt'
 
-const signIn = async (req, res) => {
-  try {
-    if (!req.body.email || !req.body.password) {
-      return res.sendStatus(400)
-    }
+import { ConflictError, UnauthorizedError } from '../errors'
+import { IUser } from 'src/interfaces'
 
-    const { error } = UserValidation.verify(req.body)
-    if (error) return res.status(422).send({ message: error.details[0].message })
+class UsersController {
+  async signIn (email: string, password: string) {
+    const user = await Users.findByEmail(email)
+    if (!user) throw new UnauthorizedError()
 
-    const user = await UsersRepository.findByEmail(req.body.email)
-    if (!user) return res.sendStatus(401)
-    const newSession = await SessionsRepository.create(user, req.body.password)
-    if (!newSession) return res.sendStatus(401)
+    const validationPassword = bcrypt.compareSync(password, user.password)
+    if (!validationPassword) throw new UnauthorizedError()
+    const token = v4()
 
-    res.status(200).send(newSession)
-  } catch (e) {
-    console.error(e)
-    res.sendStatus(500)
+    const userSession = await Sessions.create(user, token)
+    return { ...userSession, name: user.name }
+  }
+
+  async signOut (token: string) {
+    return Sessions.deleteByToken(token)
+  }
+
+  async signUp ({ name, email, password }: IUser) {
+    const emailIsUnique = await Users.emailIsUnique(email)
+    if (!emailIsUnique) throw new ConflictError()
+
+    return Users.create(name, email, password)
   }
 }
 
-const signUp = async (req, res) => {
-  try {
-    if (!req.body.name || !req.body.email || !req.body.password || !req.body.confirmPassword) {
-      return res.sendStatus(400)
-    }
-
-    const { error } = UserValidation.create(req.body)
-
-    if (error) return res.status(422).send({ message: error.details[0].message })
-
-    const emailIsUnique = await UsersRepository.emailIsUnique(req.body.email)
-    if (!emailIsUnique) return res.status(409).send({ message: 'Email already exists' })
-
-    const { id, name, email } = await UsersRepository.create(req.body)
-    res.status(201).send({ id, name, email })
-  } catch (e) {
-    console.error(e)
-    res.sendStatus(500)
-  }
-}
-
-export const signOut = async (req, res) => {
-  try {
-    const { token } = req.session
-    await SessionsRepository.deleteByToken(token)
-    res.sendStatus(200)
-  } catch (e) {
-    console.error(e)
-    res.sendStatus(500)
-  }
-}
-
-export default {
-  signIn,
-  signUp,
-  signOut
-}
+export default new UsersController()

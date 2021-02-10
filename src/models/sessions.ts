@@ -1,35 +1,37 @@
-import { v4 } from 'uuid'
-import bcrypt from 'bcrypt'
 import db from '@database/index'
+import { IUser } from 'src/interfaces'
 
-async function create (user, password) {
-  const validationPassword = bcrypt.compareSync(password, user.password)
-  if (!validationPassword) return false
-  const token = v4()
-  await db.query(
-    'INSERT INTO sessions ("userId",token) VALUES ($1,$2)',
-    [user.id, token]
-  )
-  return { userId: user.id, name: user.name, token }
-}
+export default class Session {
+  id: number;
+  userId: number;
+  token: string;
 
-async function findByToken (token) {
-  const result = await db.query(
-    'SELECT * FROM sessions WHERE token=$1',
-    [token]
-  )
-  return result.rows[0]
-}
+  constructor (id: number, userId: number, token: string) {
+    this.id = id
+    this.userId = userId
+    this.token = token
+  }
 
-async function deleteByToken (token) {
-  await db.query(
-    'DELETE FROM sessions WHERE token=$1',
-    [token]
-  )
-}
+  static async create (user: IUser, token: string) {
+    const result = await db.query(
+      'INSERT INTO sessions ("userId",token) VALUES ($1,$2) RETURNING *',
+      [user.id, token]
+    )
+    return new Session(result.rows[0].id, result.rows[0].userId, token)
+  }
 
-export default {
-  create,
-  findByToken,
-  deleteByToken
+  static async findByToken (token: string) {
+    const result = await db.query(
+      'SELECT * FROM sessions WHERE token=$1',
+      [token]
+    )
+    return new Session(result.rows[0].id, result.rows[0].userId, result.rows[0].token)
+  }
+
+  static async deleteByToken (token: string) {
+    await db.query(
+      'DELETE FROM sessions WHERE token=$1',
+      [token]
+    )
+  }
 }
