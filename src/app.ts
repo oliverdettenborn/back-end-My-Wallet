@@ -5,7 +5,7 @@ import usersRouter from './routers/usersRouter'
 import walletRouter from './routers/walletRouter'
 import authMiddleware from './midllewares/authMiddleware'
 import { ConflictError, NotFoundError, UnauthorizedError } from './errors'
-require('express-async-errors')
+import 'express-async-errors'
 
 dotenv.config()
 const app = express()

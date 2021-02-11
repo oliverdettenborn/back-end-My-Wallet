@@ -1,8 +1,9 @@
 import express from 'express'
-import { UnauthorizedError } from 'src/errors'
+import { UnauthorizedError } from '../errors'
 import UsersController from '../controllers/UsersController'
 import authMiddleware from '../midllewares/authMiddleware'
 import UserValidation from '../schemas/users'
+import { RequestMiddleware } from 'src/interfaces'
 
 const router = express.Router()
 
@@ -26,7 +27,7 @@ router.post('/sign-in', async (req, res) => {
   res.status(200).send(session)
 })
 
-router.post('/sign-out', authMiddleware, async (req, res) => {
+router.post('/sign-out', authMiddleware, async (req: RequestMiddleware, res) => {
   const { token } = req.session
   await UsersController.signOut(token)
   res.sendStatus(200)

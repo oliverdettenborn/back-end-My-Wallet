@@ -1,4 +1,9 @@
 import joi from 'joi'
+interface Iwallet {
+  description: string,
+  amount: string,
+  kind: string,
+}
 
 const schemaEntry = joi.object({
   description: joi.string().pattern(/[\w\s\d]/, 'apenas letras e numeros').trim().required(),
@@ -12,11 +17,11 @@ const schemaOutgoing = joi.object({
   kind: joi.string().pattern(/^outgoing$/).required()
 })
 
-function entry (data) {
+function entry (data: Iwallet) {
   return schemaEntry.validate(data)
 }
 
-function outgoing (data) {
+function outgoing (data: Iwallet) {
   return schemaOutgoing.validate(data)
 }
 
