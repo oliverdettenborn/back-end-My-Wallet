@@ -3,7 +3,7 @@ import { UnauthorizedError } from '../errors'
 import UsersController from '../controllers/UsersController'
 import authMiddleware from '../midllewares/authMiddleware'
 import UserValidation from '../schemas/users'
-import { RequestMiddleware } from 'src/interfaces'
+import { RequestMiddleware } from '../interfaces'
 
 const router = express.Router()
 
@@ -23,7 +23,7 @@ router.post('/sign-in', async (req, res) => {
   if (error) return res.status(422).send({ message: error.details[0].message })
 
   const session = await UsersController.signIn(email, password)
-  if (!session) throw new UnauthorizedError()
+  // if (!session) throw new UnauthorizedError()
   res.status(200).send(session)
 })
 

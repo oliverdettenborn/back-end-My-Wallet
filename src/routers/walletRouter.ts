@@ -1,6 +1,6 @@
 import express from 'express'
 import WalletController from '../controllers/WalletController'
-import { RequestMiddleware } from 'src/interfaces'
+import { RequestMiddleware } from '../interfaces'
 import WalletValidation from '../schemas/wallet'
 
 const router = express.Router()
