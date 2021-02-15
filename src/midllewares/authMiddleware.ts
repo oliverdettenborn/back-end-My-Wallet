@@ -1,5 +1,5 @@
 import { getRepository } from 'typeorm'
-import Session from '../models/Session.ts'
+import Session from '../models/Session'
 import { Response, NextFunction } from 'express'
 import { RequestMiddleware } from '../interfaces'
 
@@ -11,7 +11,10 @@ export default async function authMiddleware (req: RequestMiddleware, res: Respo
   if (!token) return res.status(401).send({ message: 'User token not found' })
 
   const sessionRepository = getRepository(Session)
-  const session = await sessionRepository.findOne({ where: { token } })
+  const session = await sessionRepository.findOne({
+    where: { token },
+    relations: ['user']
+  })
   if (!session) return res.sendStatus(401)
 
   req.userId = session.user.id

@@ -3,10 +3,9 @@ import { NotFoundError } from '../errors'
 import { IWallet } from '../interfaces'
 import Wallet from '../models/Wallet'
 
-const walletRepository = getRepository(Wallet)
-
 class WalletController {
   async getAll (userId: number) {
+    const walletRepository = getRepository(Wallet)
     const records = await walletRepository.find({
       where: {
         user: {
@@ -25,7 +24,8 @@ class WalletController {
       amount = `-${amount}`
     }
 
-    return walletRepository.create({
+    const walletRepository = getRepository(Wallet)
+    return walletRepository.save({
       description,
       amount,
       insertionDate: new Date(),
@@ -37,6 +37,7 @@ class WalletController {
   }
 
   async deleteRecord (userId: number, recordId: number) {
+    const walletRepository = getRepository(Wallet)
     const record = await walletRepository.findOne({ where: { id: recordId } })
     if (!record) throw new NotFoundError()
     return walletRepository.remove(record)
