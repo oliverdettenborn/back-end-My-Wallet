@@ -1,8 +1,16 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToOne, JoinColumn } from 'typeorm'
-import { User } from './User'
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  OneToOne,
+  JoinColumn,
+  CreateDateColumn,
+  UpdateDateColumn
+} from 'typeorm'
+import User from './User'
 
-@Entity()
-export class Session {
+@Entity('sessions')
+export default class Session {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -12,4 +20,10 @@ export class Session {
   @OneToOne(() => User)
   @JoinColumn()
   user: User;
+
+  @CreateDateColumn({ default: 'NOW()' })
+  createdAt: Date
+
+  @UpdateDateColumn({ default: 'NOW()' })
+  updatedAt: Date
 }

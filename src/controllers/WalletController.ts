@@ -1,7 +1,7 @@
 import { getRepository } from 'typeorm'
 import { NotFoundError } from '../errors'
 import { IWallet } from '../interfaces'
-import { Wallet } from '../models/Wallet'
+import Wallet from '../models/Wallet'
 
 const walletRepository = getRepository(Wallet)
 
@@ -14,7 +14,7 @@ class WalletController {
         }
       }
     })
-    const total = `R$ ${Wallet.calcTotal(records).toFixed(2)}`
+    const total = `R$ ${this.calcTotal(records).toFixed(2)}`
     return { records, total }
   }
 
@@ -40,6 +40,18 @@ class WalletController {
     const record = await walletRepository.findOne({ where: { id: recordId } })
     if (!record) throw new NotFoundError()
     return walletRepository.remove(record)
+  }
+
+  calcTotal (list: Wallet[]) {
+    const values = list
+      .map(item =>
+        parseFloat(item.amount
+          .replace('R$ ', '')
+          .replace(/\./g, '')
+          .replace(',', '.')
+        )
+      )
+    return values.reduce((n, total) => n + total, 0)
   }
 }
 

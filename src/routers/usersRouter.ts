@@ -1,10 +1,10 @@
-import express from 'express'
+import { Router } from 'express'
 import UsersController from '../controllers/UsersController'
 import authMiddleware from '../midllewares/authMiddleware'
 import UserValidation from '../schemas/users'
 import { RequestMiddleware } from '../interfaces'
 
-const router = express.Router()
+const router = Router()
 
 router.post('/sign-up', async (req, res) => {
   const { error } = UserValidation.create(req.body)

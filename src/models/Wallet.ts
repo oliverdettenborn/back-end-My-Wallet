@@ -1,8 +1,16 @@
-import { Entity, PrimaryGeneratedColumn, Column, JoinColumn, ManyToOne } from 'typeorm'
-import { User } from './User'
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  JoinColumn,
+  ManyToOne,
+  CreateDateColumn,
+  UpdateDateColumn
+} from 'typeorm'
+import User from './User'
 
-@Entity()
-export class Wallet {
+@Entity('wallet')
+export default class Wallet {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -22,15 +30,9 @@ export class Wallet {
   @JoinColumn()
   user: User;
 
-  static calcTotal (list: Wallet[]) {
-    const values = list
-      .map(item =>
-        parseFloat(item.amount
-          .replace('R$ ', '')
-          .replace(/\./g, '')
-          .replace(',', '.')
-        )
-      )
-    return values.reduce((n, total) => n + total, 0)
-  }
+  @CreateDateColumn({ default: 'NOW()' })
+  createdAt: Date
+
+  @UpdateDateColumn({ default: 'NOW()' })
+  updatedAt: Date
 }

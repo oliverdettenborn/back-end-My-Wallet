@@ -1,5 +1,5 @@
 import { getRepository } from 'typeorm'
-import { Session } from '../models/Session'
+import Session from '../models/Session.ts'
 import { Response, NextFunction } from 'express'
 import { RequestMiddleware } from '../interfaces'
 

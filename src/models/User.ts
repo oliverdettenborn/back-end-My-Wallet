@@ -1,7 +1,13 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm'
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+  UpdateDateColumn
+} from 'typeorm'
 
-@Entity()
-export class User {
+@Entity('users')
+export default class User {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -13,4 +19,10 @@ export class User {
 
   @Column()
   password: string;
+
+  @CreateDateColumn({ default: 'NOW()' })
+  createdAt: Date
+
+  @UpdateDateColumn({ default: 'NOW()' })
+  updatedAt: Date
 }

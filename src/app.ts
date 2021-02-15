@@ -1,11 +1,15 @@
+import 'reflect-metadata'
 import * as dotenv from 'dotenv'
+import './database'
+import 'express-async-errors'
+
 import express, { Request, Response, NextFunction, ErrorRequestHandler } from 'express'
 import cors from 'cors'
+
 import usersRouter from './routers/usersRouter'
 import walletRouter from './routers/walletRouter'
 import authMiddleware from './midllewares/authMiddleware'
 import { ConflictError, NotFoundError, UnauthorizedError } from './errors'
-import 'express-async-errors'
 
 dotenv.config()
 const app = express()

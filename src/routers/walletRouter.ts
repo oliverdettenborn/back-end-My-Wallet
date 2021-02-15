@@ -1,9 +1,9 @@
-import express from 'express'
+import { Router } from 'express'
 import WalletController from '../controllers/WalletController'
 import { RequestMiddleware } from '../interfaces'
 import WalletValidation from '../schemas/wallet'
 
-const router = express.Router()
+const router = Router()
 
 router.get('/', async (req: RequestMiddleware, res) => {
   const records = await WalletController.getAll(req.userId)
