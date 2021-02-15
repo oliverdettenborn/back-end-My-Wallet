@@ -21,4 +21,16 @@ export class Wallet {
   @ManyToOne(() => User, user => user.id)
   @JoinColumn()
   user: User;
+
+  static calcTotal (list: Wallet[]) {
+    const values = list
+      .map(item =>
+        parseFloat(item.amount
+          .replace('R$ ', '')
+          .replace(/\./g, '')
+          .replace(',', '.')
+        )
+      )
+    return values.reduce((n, total) => n + total, 0)
+  }
 }
